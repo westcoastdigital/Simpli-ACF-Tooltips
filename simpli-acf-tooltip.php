@@ -3,7 +3,7 @@
 Plugin Name:  ACF Tooltips by SimpliWeb
 Plugin URI:   https://github.com/westcoastdigital/Simpli-ACF-Tooltips
 Description:  Adds a custom tooltip tab to fields in ACF
-Version:      1.0.0
+Version:      1.1.0
 Author:       Jon Mather
 Author URI:   https://simpliweb.com.au
 License:      GPL v2 or later
@@ -227,11 +227,14 @@ class SB_ACF_Tooltips
      * Returns an array of dashicon class names and their HTML previews.
      * These are displayed as radio options in the field settings.
      * 
-     * @return array Associative array of dashicon class => HTML preview
+     * Developers can add custom icons using the 'sb_acf_tooltip_icons' filter.
+     * 
+     * @return array Associative array of icon class => HTML preview
      */
     private function get_dashicons()
     {
-        return array(
+        // Default Dashicons provided by the plugin
+        $default_icons = array(
             'dashicons-lock' => '<span class="dashicons dashicons-lock"></span>',
             'dashicons-calendar' => '<span class="dashicons dashicons-calendar"></span>',
             'dashicons-visibility' => '<span class="dashicons dashicons-visibility"></span>',
@@ -318,6 +321,52 @@ class SB_ACF_Tooltips
             'dashicons-smartphone' => '<span class="dashicons dashicons-smartphone"></span>',
             'dashicons-smiley' => '<span class="dashicons dashicons-smiley"></span>'
         );
+
+        /**
+         * Filter: sb_acf_tooltip_icons
+         * 
+         * Allows developers to add custom icons to the tooltip icon selector.
+         * 
+         * @param array $default_icons Array of icon class => HTML preview
+         * 
+         * @return array Modified array of icons
+         * 
+         * @example
+         * add_filter('sb_acf_tooltip_icons', function($icons) {
+         *     // Add Font Awesome icon
+         *     $icons['fa-custom'] = '<i class="fa fa-custom"></i>';
+         *     
+         *     // Add custom SVG icon
+         *     $icons['my-custom-icon'] = '<span class="my-custom-icon"><svg>...</svg></span>';
+         *     
+         *     // Add image icon
+         *     $icons['my-image-icon'] = '<img src="' . get_template_directory_uri() . '/images/icon.png" width="20" height="20">';
+         *     
+         *     return $icons;
+         * });
+         */
+        return apply_filters('sb_acf_tooltip_icons', $default_icons);
+    }
+
+    /**
+     * Helper method to register an icon library
+     * 
+     * @param string $prefix CSS prefix for the icon library (e.g., 'fa' for Font Awesome)
+     * @param array $icon_names Array of icon names without prefix
+     * @param string $format HTML format string with %s placeholder for icon name
+     * 
+     * @example
+     * $this->register_icon_library('fa', ['home', 'user', 'heart'], '<i class="fa fa-%s"></i>');
+     */
+    public function register_icon_library($prefix, $icon_names, $format)
+    {
+        add_filter('sb_acf_tooltip_icons', function ($icons) use ($prefix, $icon_names, $format) {
+            foreach ($icon_names as $name) {
+                $key = $prefix . '-' . $name;
+                $icons[$key] = sprintf($format, $name);
+            }
+            return $icons;
+        });
     }
 
     /**
@@ -357,6 +406,8 @@ class SB_ACF_Tooltips
      * This runs when ACF renders each field. If the field has tooltip content,
      * this outputs the HTML for the tooltip icon and popup box.
      * 
+     * Handles both default Dashicons and custom icons added via the filter.
+     * 
      * @param array $field The ACF field being rendered
      * @return void
      */
@@ -368,23 +419,38 @@ class SB_ACF_Tooltips
         }
 
         // Get tooltip settings with fallbacks
-        $icon = !empty($field['tooltip_icon']) ? $field['tooltip_icon'] : 'dashicons-info';
+        $icon_key = !empty($field['tooltip_icon']) ? $field['tooltip_icon'] : 'dashicons-info';
         $position = isset($field['tooltip_position']) ? $field['tooltip_position'] : 'top';
         $tooltip_content = !empty($field['tooltip_content']) ? wp_kses_post($field['tooltip_content']) : '';
         $tooltip_bg = !empty($field['tooltip_bg']) ? esc_attr($field['tooltip_bg']) : '#111111';
         $tooltip_width = !empty($field['tooltip_width']) ? intval($field['tooltip_width']) : 60;
 
+        // Get all available icons (including custom ones from filter)
+        $all_icons = $this->get_dashicons();
+
+        // Determine the icon HTML to display
+        // If the icon key exists in our icons array, use its HTML
+        // Otherwise, treat it as a dashicon class (for backward compatibility)
+        if (isset($all_icons[$icon_key])) {
+            $icon_html = $all_icons[$icon_key];
+        } else {
+            // Fallback: assume it's a dashicon class
+            $icon_html = '<span class="dashicons ' . esc_attr($icon_key) . '"></span>';
+        }
+
         // Output the tooltip HTML
         // The tooltip is positioned via CSS based on the data-position attribute
         // Inline styles allow for custom background color and width per tooltip
         echo sprintf(
-            '<span class="sb-acf-tooltip dashicons %s" data-position="%s">
-                <span class="sb-acf-tooltip-inner" style="background:%s;width:%dpx;">
-                    <div class="content-wrapper">%s</div>
-                </span>
-            </span>',
-            esc_attr($icon),
+            '<span class="sb-acf-tooltip" data-position="%s" data-icon-key="%s">
+            %s
+            <span class="sb-acf-tooltip-inner" style="background:%s;width:%dpx;">
+                <div class="content-wrapper">%s</div>
+            </span>
+        </span>',
             esc_attr($position),
+            esc_attr($icon_key),
+            $icon_html,
             $tooltip_bg,
             $tooltip_width,
             $tooltip_content
