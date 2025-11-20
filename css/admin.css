@@ -1,0 +1,145 @@
+/* ===================================
+           Icon Selector Styling in ACF Settings
+           =================================== */
+
+/* Display icons in a flex grid */
+.acf-field-setting-tooltip_icon .acf-radio-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Hide the actual radio inputs */
+.acf-field-setting-tooltip_icon .acf-radio-list input {
+  display: none;
+}
+
+/* Style the icon labels as clickable buttons */
+.acf-field-setting-tooltip_icon .acf-radio-list label {
+  padding: 5px;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+/* Hover state for icon selection */
+.acf-field-setting-tooltip_icon .acf-radio-list label:hover {
+  background: #066998;
+  color: #fff;
+}
+
+/* Selected icon state */
+.acf-field-setting-tooltip_icon .acf-radio-list .selected {
+  background: #0783be;
+  color: #fff;
+}
+
+/* ===================================
+           Tooltip Display on ACF Fields
+           =================================== */
+
+/* Tooltip icon container */
+.sb-acf-tooltip {
+  display: inline-block;
+  margin-left: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  position: relative;
+  vertical-align: middle;
+}
+
+/* Tooltip popup box (hidden by default) */
+.sb-acf-tooltip-inner {
+  display: none;
+  position: absolute;
+  max-width: 300px;
+  width: auto;
+  background: #111;
+  color: #fff;
+  padding: 8px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 1.4;
+  z-index: 9999;
+  box-sizing: border-box;
+  word-wrap: break-word;
+}
+
+/* Content wrapper ensures HTML content wraps correctly */
+.sb-acf-tooltip-inner .content-wrapper {
+  word-wrap: break-word;
+}
+
+/* Show tooltip on hover */
+.sb-acf-tooltip:hover .sb-acf-tooltip-inner {
+  display: block;
+}
+
+/* ===================================
+           Tooltip Arrow Styling
+           =================================== */
+
+/* Base arrow styles */
+.sb-acf-tooltip-inner::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+/* TOP position - tooltip appears above icon */
+.sb-acf-tooltip[data-position="top"] .sb-acf-tooltip-inner {
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.sb-acf-tooltip[data-position="top"] .sb-acf-tooltip-inner::after {
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px 5px 0 5px;
+  border-color: #111 transparent transparent transparent;
+}
+
+/* BOTTOM position - tooltip appears below icon */
+.sb-acf-tooltip[data-position="bottom"] .sb-acf-tooltip-inner {
+  top: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.sb-acf-tooltip[data-position="bottom"] .sb-acf-tooltip-inner::after {
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 0 5px 5px 5px;
+  border-color: transparent transparent #111 transparent;
+}
+
+/* LEFT position - tooltip appears to the left of icon */
+.sb-acf-tooltip[data-position="left"] .sb-acf-tooltip-inner {
+  top: 50%;
+  right: 120%;
+  transform: translateY(-50%);
+}
+.sb-acf-tooltip[data-position="left"] .sb-acf-tooltip-inner::after {
+  top: 50%;
+  right: -5px;
+  transform: translateY(-50%);
+  border-width: 5px 0 5px 5px;
+  border-color: transparent transparent transparent #111;
+}
+
+/* RIGHT position - tooltip appears to the right of icon */
+.sb-acf-tooltip[data-position="right"] .sb-acf-tooltip-inner {
+  top: 50%;
+  left: 120%;
+  transform: translateY(-50%);
+}
+.sb-acf-tooltip[data-position="right"] .sb-acf-tooltip-inner::after {
+  top: 50%;
+  left: -5px;
+  transform: translateY(-50%);
+  border-width: 5px 5px 5px 0;
+  border-color: transparent #111 transparent transparent;
+}
