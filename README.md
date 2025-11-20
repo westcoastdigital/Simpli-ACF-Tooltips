@@ -21,6 +21,8 @@ A WordPress plugin that adds customizable tooltip functionality to Advanced Cust
 
 ### Field Settings Panel
 ![Field Settings](images/acf-tooltip-settings.png)
+
+### Field Tooltip View
 ![Field View](images/acf-tooltip-field.png)
 
 ## Requirements
