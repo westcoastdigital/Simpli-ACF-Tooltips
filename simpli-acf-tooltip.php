@@ -3,7 +3,7 @@
 Plugin Name:  ACF Tooltips by SimpliWeb
 Plugin URI:   https://github.com/westcoastdigital/Simpli-ACF-Tooltips
 Description:  Adds a custom tooltip tab to fields in ACF
-Version:      1.1.0
+Version:      1.2.0
 Author:       Jon Mather
 Author URI:   https://simpliweb.com.au
 License:      GPL v2 or later
@@ -205,13 +205,27 @@ class SB_ACF_Tooltips
             'ajax'          => 0,
         ));
 
+        // Set default value if not already set
+        if (!isset($field['open_as_modal'])) {
+            $field['open_as_modal'] = 0;
+        }
+
+        // Open tooltip as modal
+        acf_render_field_setting($field, array(
+            'label'         => __('Open as Modal', 'simpli'),
+            'instructions'  => __('Toggle on to have the tooltip display in a popup', 'simpli'),
+            'type'          => 'true_false',
+            'name'          => 'open_as_modal',
+            'ui'            => 1,
+        ));
+
         // Tooltip Width - pixel width of the tooltip popup
         acf_render_field_setting($field, array(
             'label'         => __('Tooltip Width', 'simpli'),
             'instructions'  => __('Set the px width for the tooltip', 'simpli'),
             'type'          => 'number',
             'name'          => 'tooltip_width',
-            'default_value' => 60,
+            'default_value' => 150,
             'allow_null'    => 0,
             'ui'            => 0,
             'ajax'          => 0,
@@ -423,7 +437,21 @@ class SB_ACF_Tooltips
         $position = isset($field['tooltip_position']) ? $field['tooltip_position'] : 'top';
         $tooltip_content = !empty($field['tooltip_content']) ? wp_kses_post($field['tooltip_content']) : '';
         $tooltip_bg = !empty($field['tooltip_bg']) ? esc_attr($field['tooltip_bg']) : '#111111';
-        $tooltip_width = !empty($field['tooltip_width']) ? intval($field['tooltip_width']) : 60;
+        $tooltip_modal = !empty($field['open_as_modal']) ? intval($field['open_as_modal']) : 0;
+
+        $is_modal = $tooltip_modal; // Keep as 0 or 1
+
+        // Build inline styles
+        $inline_styles = "background:{$tooltip_bg};";
+
+        if ($tooltip_modal == 1) {
+            // Modal mode - width handled by CSS
+            $inline_styles .= "width:480px;";
+        } else {
+            // Regular tooltip mode
+            $width_value = !empty($field['tooltip_width']) ? intval($field['tooltip_width']) : 150;
+            $inline_styles .= "width:{$width_value}px;";
+        }
 
         // Get all available icons (including custom ones from filter)
         $all_icons = $this->get_dashicons();
@@ -442,17 +470,17 @@ class SB_ACF_Tooltips
         // The tooltip is positioned via CSS based on the data-position attribute
         // Inline styles allow for custom background color and width per tooltip
         echo sprintf(
-            '<span class="sb-acf-tooltip" data-position="%s" data-icon-key="%s">
+            '<span class="sb-acf-tooltip" data-position="%s" data-icon-key="%s" data-is-modal="%s">
             %s
-            <span class="sb-acf-tooltip-inner" style="background:%s;width:%dpx;">
+            <span class="sb-acf-tooltip-inner" style="%s">
                 <div class="content-wrapper">%s</div>
             </span>
         </span>',
             esc_attr($position),
             esc_attr($icon_key),
+            esc_attr($is_modal),
             $icon_html,
-            $tooltip_bg,
-            $tooltip_width,
+            $inline_styles,
             $tooltip_content
         );
     }

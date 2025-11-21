@@ -1,8 +1,8 @@
 # ACF Tooltips by SimpliWeb
 
-A WordPress plugin that adds customisable tooltip functionality to Advanced Custom Fields (ACF). Display helpful information next to field labels with beautiful hover tooltips featuring custom icons, colours, and positioning.
+A WordPress plugin that adds customisable tooltip functionality to Advanced Custom Fields (ACF). Display helpful information next to field labels with beautiful hover tooltips or click-to-open modals featuring custom icons, colours, and positioning.
 
-![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)
+![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)
 ![WordPress](https://img.shields.io/badge/WordPress-5.0+-green.svg)
 ![ACF](https://img.shields.io/badge/ACF-6.0+-orange.svg)
 ![License](https://img.shields.io/badge/license-GPL%20v2+-red.svg)
@@ -10,14 +10,16 @@ A WordPress plugin that adds customisable tooltip functionality to Advanced Cust
 ## Features
 
 - 🎨 **Rich Content Editor** - Use the WYSIWYG editor to create formatted tooltip content
-- 🎯 **4 Positioning Options** - Display tooltips above, below, left, or right of the icon
+- 🖱️ **Modal Mode** - Toggle between hover tooltips and click-to-open modal popups
+- 🎯 **4 Positioning Options** - Display tooltips above, below, left, or right of the icon (hover mode)
 - 🎭 **80+ Dashicons** - Choose from WordPress's built-in icon library
 - 🔌 **Custom Icon Support** - Add your own icons via filters (Font Awesome, SVG, images)
 - 🌈 **Custom Colours** - Set custom background colours for each tooltip
-- 📏 **Adjustable Width** - Control the pixel width of each tooltip
+- 📏 **Adjustable Width** - Control the pixel width of each tooltip (hover mode)
 - 🔧 **Works with All ACF Fields** - Automatically adds tooltip settings to every ACF field type
 - 🎣 **Developer Friendly** - Multiple hooks and filters for customisation
 - 💼 **Easy to Use** - Simple interface integrated directly into ACF's field settings
+- ⌨️ **Keyboard Accessible** - Modal tooltips close with the Escape key
 
 ## Screenshots
 
@@ -47,7 +49,6 @@ A WordPress plugin that adds customisable tooltip functionality to Advanced Cust
 4. Navigate to any ACF Field Group and edit a field to see the new Tooltip Settings
 
 ### Git Clone
-
 ```bash
 cd wp-content/plugins
 git clone https://github.com/westcoastdigital/Simpli-ACF-Tooltips.git
@@ -65,10 +66,31 @@ Then activate the plugin in WordPress.
 4. Find the **Tooltip Settings** section
 5. Configure your tooltip:
    - **Tooltip Content** - Enter your help text (supports HTML formatting)
-   - **Tooltip Position** - Choose where the tooltip appears (top, right, bottom, left)
+   - **Tooltip Position** - Choose where the tooltip appears (top, right, bottom, left) - *only applies to hover mode*
    - **Tooltip Icon** - Select a Dashicon to display next to the label
    - **Tooltip Background** - Pick a custom background colour
-   - **Tooltip Width** - Set the pixel width of the tooltip popup
+   - **Open as Modal** - Toggle on to display tooltip as a click-to-open modal popup
+   - **Tooltip Width** - Set the pixel width of the tooltip popup - *only applies to hover mode*
+
+### Tooltip Display Modes
+
+#### Hover Mode (Default)
+- Tooltip appears on hover
+- Position can be set to top, right, bottom, or left
+- Width is customisable
+- Ideal for short, quick-reference content
+
+#### Modal Mode
+- Tooltip opens as a centered popup when icon is clicked
+- Fixed width of 480px with responsive max-width
+- Features a close button (× in top-right corner)
+- Closes by clicking:
+  - The close button
+  - Outside the modal (on the overlay)
+  - The Escape key
+- Dark overlay dims the background
+- Scrollable content for longer help text
+- Perfect for detailed instructions or rich content
 
 ### Example Use Cases
 
@@ -77,6 +99,8 @@ Then activate the plugin in WordPress.
 - **Technical Notes** - Add developer notes or field relationships
 - **User Guidance** - Help content editors understand field purposes
 - **Validation Rules** - Explain format requirements or restrictions
+- **Detailed Instructions** - Use modal mode for step-by-step guides with images
+- **Video Tutorials** - Embed video content in modal tooltips
 
 ## Configuration
 
@@ -87,13 +111,13 @@ All tooltip settings are configured per-field through ACF's field settings inter
 | Setting | Type | Default | Description |
 |---------|------|---------|-------------|
 | Tooltip Content | WYSIWYG | Empty | The HTML content displayed in the tooltip |
-| Tooltip Position | Select | Top | Where the tooltip appears relative to the icon |
+| Tooltip Position | Select | Top | Where the tooltip appears relative to the icon (hover mode only) |
 | Tooltip Icon | Radio (Icons) | Info | The Dashicon displayed next to the label |
 | Tooltip Background | Colour Picker | #111111 | Background colour of the tooltip popup |
-| Tooltip Width | Number | 60px | Pixel width of the tooltip popup |
+| Open as Modal | True/False | Off | Toggle to display tooltip as a click-to-open modal |
+| Tooltip Width | Number | 150px | Pixel width of the tooltip popup (hover mode only) |
 
 ## File Structure
-
 ```
 acf-tooltips/
 ├── css/
@@ -117,7 +141,6 @@ Developers can add custom icons to the tooltip icon selector using the `sb_acf_t
 #### Basic Usage
 
 Add this code to your theme's `functions.php` file:
-
 ```php
 /**
  * Add custom icons to ACF Tooltips
@@ -132,7 +155,6 @@ add_filter('sb_acf_tooltip_icons', function($icons) {
 ```
 
 #### Add Font Awesome Icons
-
 ```php
 /**
  * Add Font Awesome icons to ACF Tooltips
@@ -159,7 +181,6 @@ add_action('admin_enqueue_scripts', function() {
 ```
 
 #### Add Custom SVG Icons
-
 ```php
 /**
  * Add custom SVG icons to ACF Tooltips
@@ -187,7 +208,6 @@ add_action('admin_head', function() {
 ```
 
 #### Add Image Icons
-
 ```php
 /**
  * Add custom image icons to ACF Tooltips
@@ -206,7 +226,6 @@ add_filter('sb_acf_tooltip_icons', function($icons) {
 ```
 
 #### Replace All Default Icons
-
 ```php
 /**
  * Replace all default icons with custom ones
@@ -222,7 +241,6 @@ add_filter('sb_acf_tooltip_icons', function($icons) {
 ```
 
 #### Conditionally Add Icons Based on User Role
-
 ```php
 /**
  * Add premium icons only for administrators
@@ -251,7 +269,6 @@ add_filter('sb_acf_tooltip_icons', function($icons) {
 ### Helper Method: Register Icon Library
 
 You can also use the built-in helper method to register an entire icon library:
-
 ```php
 /**
  * Register Font Awesome library using the helper method
@@ -269,7 +286,6 @@ add_action('acf/init', function() {
 ### Styling Tooltips
 
 You can override the default tooltip styles by adding CSS to your theme:
-
 ```css
 /* Change tooltip font size */
 .sb-acf-tooltip-inner {
@@ -293,6 +309,23 @@ You can override the default tooltip styles by adding CSS to your theme:
     max-width: 20px;
     max-height: 20px;
 }
+
+/* Customise modal overlay */
+.sb-acf-tooltip-overlay {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+/* Customise modal appearance */
+.sb-acf-tooltip[data-is-modal="1"] .sb-acf-tooltip-inner {
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+/* Customise modal close button */
+.sb-acf-tooltip[data-is-modal="1"] .sb-acf-tooltip-inner .content-wrapper::before {
+    color: #fff;
+    font-size: 36px;
+}
 ```
 
 ## Troubleshooting
@@ -303,6 +336,13 @@ You can override the default tooltip styles by adding CSS to your theme:
 2. Verify ACF is installed and activated
 3. Clear your browser cache
 4. Check browser console for JavaScript errors
+
+### Modal Not Opening
+
+1. Ensure "Open as Modal" toggle is enabled in field settings
+2. Check for JavaScript conflicts with other plugins
+3. Verify jQuery is loaded properly
+4. Check browser console for errors
 
 ### WYSIWYG Editor Not Loading
 
@@ -326,7 +366,24 @@ This plugin includes fixes for ACF's WYSIWYG editor initialisation issues. If yo
 3. Use browser dev tools to inspect the HTML output
 4. Ensure your custom CSS for icons is loading
 
+### Modal Won't Close
+
+1. Check that JavaScript is not being blocked
+2. Verify there are no console errors preventing event handlers
+3. Ensure no other plugins are interfering with click events
+4. Try pressing the Escape key as an alternative close method
+
 ## Technical Notes
+
+### Modal Implementation
+
+The modal mode uses:
+- Fixed positioning to center the tooltip
+- Click event handlers for opening/closing
+- Escape key listener for keyboard accessibility
+- Overlay element to dim background and provide click-to-close functionality
+- CSS animations for smooth transitions
+- Event delegation to handle dynamic content
 
 ### WYSIWYG Editor Configuration
 
@@ -354,9 +411,19 @@ Available filters:
 - Firefox (latest)
 - Safari (latest)
 - Edge (latest)
-- IE11+ (basic functionality)
+- IE11+ (basic functionality, modal mode may have limited support)
 
 ## Changelog
+
+### 1.2.0 (2024-11-21)
+- Added modal mode - tooltips can now open as click-to-open popups
+- Added "Open as Modal" toggle setting in field configuration
+- Modal features: centered display, dark overlay, close button, Escape key support
+- Width setting now conditionally hidden when modal mode is enabled
+- Fixed width set to 480px for modal tooltips with responsive max-width
+- Added smooth animations for modal open/close
+- Improved accessibility with keyboard support
+- Enhanced user experience with multiple close options
 
 ### 1.1.0 (2024-11-21)
 - Added custom icon support via `sb_acf_tooltip_icons` filter
@@ -404,7 +471,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## Licence
 
 This plugin is licensed under the GPL v2 or later.
-
 ```
 Copyright (C) 2025 SimpliWeb
 
@@ -434,16 +500,18 @@ For bugs, feature requests, or support:
 ## Roadmap
 
 Potential future features:
-- [ ] Tooltip animations and transitions
+- [ ] Tooltip animations and transitions options
 - [ ] Mobile-specific tooltip behaviour
 - [ ] Tooltip templates/presets
 - [ ] Multi-language support (WPML/Polylang)
 - [ ] Frontend tooltip display option
-- [ ] Click-to-open option for mobile
+- [x] Click-to-open option for mobile (completed - modal mode)
 - [ ] Accessibility improvements (ARIA labels)
 - [ ] Tooltip positioning auto-adjustment for screen edges
 - [ ] Video embed support in tooltips
 - [ ] Tooltip import/export functionality
+- [ ] Custom modal sizes
+- [ ] Tooltip groups/categories
 
 ---
 
