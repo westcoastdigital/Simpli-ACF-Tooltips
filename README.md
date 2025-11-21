@@ -415,7 +415,7 @@ Available filters:
 
 ## Changelog
 
-### 1.2.0 (2024-11-21)
+### 1.2.0 (2025-11-21)
 - Added modal mode - tooltips can now open as click-to-open popups
 - Added "Open as Modal" toggle setting in field configuration
 - Modal features: centered display, dark overlay, close button, Escape key support
@@ -425,7 +425,7 @@ Available filters:
 - Improved accessibility with keyboard support
 - Enhanced user experience with multiple close options
 
-### 1.1.0 (2024-11-21)
+### 1.1.0 (2025-11-21)
 - Added custom icon support via `sb_acf_tooltip_icons` filter
 - Added helper method `register_icon_library()` for bulk icon registration
 - Improved icon rendering to support Font Awesome, SVG, and image icons
@@ -433,7 +433,7 @@ Available filters:
 - Enhanced documentation with custom icon examples
 - Improved flexibility for theme and plugin developers
 
-### 1.0.0 (2024-11-20)
+### 1.0.0 (2025-11-20)
 - Initial release
 - WYSIWYG editor for tooltip content
 - 4 positioning options (top, right, bottom, left)
