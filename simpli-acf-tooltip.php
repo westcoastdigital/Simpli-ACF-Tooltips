@@ -18,9 +18,28 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('SB_ACF_TOOLTIPS_VERSION', '1.0.0');
+define('SB_ACF_TOOLTIPS_VERSION', '1.2.0');
 define('SB_ACF_TOOLTIPS_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('SB_ACF_TOOLTIPS_PLUGIN_URL', plugin_dir_url(__FILE__));
+
+// ============================================
+// GitHub Auto-Updater Integration
+// ============================================
+require_once SB_ACF_TOOLTIPS_PLUGIN_DIR . 'github-updater.php';
+
+if (class_exists('SimpliWeb_GitHub_Updater')) {
+    $updater = new SimpliWeb_GitHub_Updater(__FILE__);
+    $updater->set_username('westcoastdigital');
+    $updater->set_repository('Simpli-ACF-Tooltips');
+    
+    // For private repos, uncomment and add your token:
+    // if (defined('GITHUB_ACCESS_TOKEN')) {
+    //     $updater->authorize(GITHUB_ACCESS_TOKEN);
+    // }
+    
+    $updater->initialize();
+}
+// ============================================
 
 /**
  * Main plugin class for ACF Tooltips
